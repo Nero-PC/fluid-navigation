@@ -1,0 +1,228 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+  --wash-a: rgba(126, 190, 196, 0.42);
+  --wash-b: rgba(176, 214, 230, 0.5);
+  --page-top: #f6fbfb;
+  --page-bottom: #e4f0f2;
+  --ink: #14343a;
+  --muted: #4d6a70;
+}
+
+.dark {
+  color-scheme: dark;
+  --wash-a: rgba(24, 92, 102, 0.45);
+  --wash-b: rgba(18, 48, 72, 0.55);
+  --page-top: #0c1618;
+  --page-bottom: #101c22;
+  --ink: #e7f3f4;
+  --muted: #9bb4b8;
+}
+
+html,
+body {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  color: var(--ink);
+  background:
+    radial-gradient(920px 520px at 50% 42%, var(--wash-a), transparent 62%),
+    radial-gradient(680px 420px at 86% 88%, var(--wash-b), transparent 58%),
+    linear-gradient(180deg, var(--page-top) 0%, var(--page-bottom) 100%);
+  font-family: "Avenir Next", "Segoe UI", "Helvetica Neue", sans-serif;
+}
+
+/* Idle float lives on a wrapper so hover/press transforms stay on the button. */
+.orb-float {
+  animation: orb-float 5.6s ease-in-out infinite;
+}
+
+@keyframes orb-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-7px);
+  }
+}
+
+.orb {
+  width: 5.75rem;
+  height: 5.75rem;
+  border-radius: 9999px;
+  position: relative;
+  display: grid;
+  place-items: center;
+  background:
+    radial-gradient(120% 90% at 50% 0%, rgba(255, 255, 255, 0.96), rgba(255, 255, 255, 0) 46%),
+    linear-gradient(180deg, #f7fcfc 0%, #d5e7ea 52%, #a8c4cb 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.95),
+    inset 0 -12px 16px rgba(22, 70, 80, 0.16),
+    0 1px 1px rgba(16, 50, 58, 0.06),
+    0 10px 18px rgba(18, 70, 80, 0.16),
+    0 22px 40px rgba(18, 70, 80, 0.08);
+  transition: transform 180ms ease, box-shadow 180ms ease;
+}
+
+.orb:hover {
+  transform: translateY(-4px);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.95),
+    inset 0 -12px 16px rgba(22, 70, 80, 0.16),
+    0 16px 28px rgba(18, 70, 80, 0.2),
+    0 32px 48px rgba(18, 70, 80, 0.12);
+}
+
+.orb:active {
+  transform: translateY(2px) scale(0.98);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.7),
+    inset 0 -6px 10px rgba(22, 70, 80, 0.22),
+    0 3px 8px rgba(18, 70, 80, 0.16);
+}
+
+.orb:focus-visible {
+  outline: 2px solid #0c5962;
+  outline-offset: 4px;
+}
+
+.dark .orb {
+  background:
+    radial-gradient(120% 90% at 50% 0%, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0) 42%),
+    linear-gradient(180deg, #314c53 0%, #1a343b 54%, #0d2227 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.28),
+    inset 0 -12px 16px rgba(0, 0, 0, 0.38),
+    0 12px 26px rgba(0, 0, 0, 0.38);
+}
+
+.dark .orb:focus-visible {
+  outline-color: #b7e0e4;
+}
+
+/* Panel grows from the trigger. Closed state is the first painted frame. */
+.nav-panel {
+  transform-origin: top center;
+  opacity: 0;
+  transform: scale(0.18);
+  transition:
+    opacity 320ms ease,
+    transform 440ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.nav-panel.is-open {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.tile {
+  opacity: 0;
+}
+
+.nav-panel.is-open .tile {
+  animation: tile-in 340ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: calc(var(--i) * 22ms);
+}
+
+.nav-panel.is-closing .tile {
+  animation: tile-out 200ms ease both;
+  animation-delay: calc((13 - var(--i)) * 12ms);
+}
+
+@keyframes tile-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes tile-out {
+  from {
+    opacity: 1;
+    transform: none;
+  }
+  to {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+}
+
+.edge-fade {
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    transparent 0,
+    #000 14px,
+    #000 calc(100% - 14px),
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    to bottom,
+    transparent 0,
+    #000 14px,
+    #000 calc(100% - 14px),
+    transparent 100%
+  );
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .orb-float {
+    animation: none;
+  }
+
+  .orb,
+  .nav-panel {
+    transition: opacity 150ms linear;
+  }
+
+  .orb:hover,
+  .orb:active,
+  .nav-panel,
+  .nav-panel.is-open {
+    transform: none;
+  }
+
+  .nav-panel.is-open .tile,
+  .nav-panel.is-closing .tile {
+    animation: tile-fade 150ms linear both;
+    animation-delay: 0s;
+  }
+}
+
+@keyframes tile-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.nav-panel.is-closing {
+  /* reverse of the open fade when motion is reduced */
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nav-panel.is-closing .tile {
+    animation-name: tile-fade-out;
+  }
+}
+
+@keyframes tile-fade-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
